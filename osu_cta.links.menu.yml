@@ -1,0 +1,5 @@
+osu_ctas.settings:
+  title: 'Global CTA Buttons'
+  description: 'Manage site-wide Call to Action buttons'
+  route_name: osu_cta.settings
+  parent: system.admin_config_system

@@ -1,0 +1,3 @@
+administer global ctasettings:
+  title: 'Administer global CTA buttons'
+  description: 'Manage the site-wide Call to Action buttons'

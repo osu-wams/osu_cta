@@ -1,0 +1,7 @@
+osu_cta.settings:
+  path: '/admin/config/system/osu-global-cta'
+  defaults:
+    _form: '\Drupal\osu_cta\Form\GlobalCtaSettingsForm'
+    _title: 'Global CTA Buttons'
+  requirements:
+    _permission: 'administer global ctasettings'

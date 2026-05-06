@@ -1,0 +1,5 @@
+name: OSU Calls to Action
+type: module
+description: Provides a custom block for displaying calls to action on OSU websites.
+package: OSU
+core_version_requirement: ^10 || ^11
