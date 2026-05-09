@@ -1,5 +1,5 @@
 name: CTA Buttons
-description: 'Renders site-wide Call to Action buttons'
+description: "Renders site-wide Call to Action buttons"
 props:
   type: object
   properties:
