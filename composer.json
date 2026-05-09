@@ -14,7 +14,8 @@
     "cs-checkstyle": "phpcs -q --report=checkstyle",
     "phpcs": "phpcs",
     "phpcbf": "phpcbf",
-    "twigcs": "twigcs --twig-version=2"
+    "twigcs": "twigcs --twig-version=2",
+    "yaml-lint": "yaml-lint"
   },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
@@ -22,7 +23,7 @@
     "drupal/coder": "^8.3",
     "friendsoftwig/twigcs": "^6.2",
     "friendsofphp/php-cs-fixer": "^3.95",
-    "j13k/yaml-lint": "^1.1"
+    "drupol/phpcsfixer-configs-drupal": "^2.2"
   },
   "config": {
     "allow-plugins": {
