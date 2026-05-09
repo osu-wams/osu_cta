@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\osu_cta\Plugin\Block;
 
 use Drupal\core\block\Attribute\Block;
