@@ -21,11 +21,11 @@ use Drupal\Core\Url;
 final class GlobalCtaBlock extends BlockBase {
 
   /**
-   * @{inheritDoc}
+   * {@inheritDoc}
    */
   public function build() {
     $osuCtaData = \Drupal::config('osu_cta.settings')->get('global_cta') ?? [];
-    $osuCta = array_map(function($cta) {
+    $osuCta = array_map(function ($cta) {
       return [
         'link' => Link::fromTextAndUrl(
           $cta['title'],

@@ -18,14 +18,14 @@ use Drupal\Core\Form\FormStateInterface;
 class GlobalCtaSettingsForm extends ConfigFormBase {
 
   /**
-   * @{inheritDoc}
+   * {@inheritDoc}
    */
   public function getFormId(): string {
     return 'osu_cta_settings_form';
   }
 
   /**
-   * @{inheritDoc}
+   * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
     $storage = $form_state->get('cta');
@@ -106,9 +106,9 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
    * Add a new row for the Global CTA.
    *
    * @param array $form
+   *   The form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *
-   * @return void
+   *   The form state.
    */
   public function addCta(array &$form, FormStateInterface $form_state): void {
     $cta = $this->config('osu_cta.settings')->get('global_cta') ?? [];
@@ -118,7 +118,7 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
   }
 
   /**
-   * @{inheritDoc}
+   * {@inheritDoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     $ctas = array_values($form_state->getValue('cta') ?? []);
@@ -133,9 +133,9 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
    * Remove a row from the Global CTA.
    *
    * @param array $form
+   *   The Form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *
-   * @return void
+   *   The form state.
    */
   public function removeCta(array &$form, FormStateInterface $form_state): void {
     $trigger = $form_state->getTriggeringElement();
@@ -148,7 +148,7 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
   }
 
   /**
-   * @{inheritDoc}
+   * {@inheritDoc}
    */
   protected function getEditableConfigNames(): array {
     return ['osu_cta.settings'];
