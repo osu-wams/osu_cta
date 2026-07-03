@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\osu_cta\Plugin\Block;
 
-use Drupal\core\block\Attribute\Block;
+use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -23,15 +23,21 @@ final class GlobalCtaBlock extends BlockBase {
   /**
    * {@inheritDoc}
    */
-  public function build() {
+  public function build():array {
     $osuCtaData = \Drupal::config('osu_cta.settings')->get('global_cta') ?? [];
     $osuCta = array_map(function ($cta) {
+      if (preg_match('/^(https?:|mailto:|tel:)/', $cta['uri'])) {
+        $url = Url::fromUri(
+            $cta['uri'],
+            $cta['uri']['options'] ?? []);
+      }
+      else {
+        $url = Url::fromUserInput($cta['uri']);
+      }
       return [
         'link' => Link::fromTextAndUrl(
           $cta['title'],
-          Url::fromUri(
-            $cta['uri'],
-            $cta['uri']['options'] ?? []))
+          $url)
           ->toRenderable(),
       ];
     }, $osuCtaData);
