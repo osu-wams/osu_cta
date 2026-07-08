@@ -1,5 +1,15 @@
 <div class="cta-buttons">
   {% for item in items %}
-    {{ item.link }}
+  <a href="{{ item.link }}" class="cta-link">
+    {% if item.icon %}
+      {% set icon_parts = item.icon|split(":") %}
+      {% if icon_parts|length == 2 %}
+      <span class="cta-link">
+        {{ icon(icon_parts.0, icon_parts.1, {size: 'XS'}) }}
+      </span>
+      {% endif %}
+    {% endif %}
+    {{ item.title }}
+  </a>
   {% endfor %}
 </div>

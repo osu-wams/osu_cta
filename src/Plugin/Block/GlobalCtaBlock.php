@@ -6,7 +6,6 @@ namespace Drupal\osu_cta\Plugin\Block;
 
 use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 
@@ -35,10 +34,9 @@ final class GlobalCtaBlock extends BlockBase {
         $url = Url::fromUserInput($cta['uri']);
       }
       return [
-        'link' => Link::fromTextAndUrl(
-          $cta['title'],
-          $url)
-          ->toRenderable(),
+        'title' => $cta['title'],
+        'link' => $url,
+        'icon' => $cta['icon'],
       ];
     }, $osuCtaData);
     return [
@@ -46,6 +44,9 @@ final class GlobalCtaBlock extends BlockBase {
       '#component' => 'osu_cta:global-cta',
       '#props' => [
         'items' => $osuCta,
+      ],
+      '#cache' => [
+        'tags' => ['config:osu_cta.settings'],
       ],
     ];
   }
