@@ -1,7 +1,16 @@
 name: Global CTA Buttons
-description: 'Renders site-wide Call to Action buttons'
+description: "Renders site-wide Call to Action buttons"
 props:
   type: object
   properties:
     items:
       type: array
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+          url:
+            type: string
+          icon:
+            type: ["string", "null"]
