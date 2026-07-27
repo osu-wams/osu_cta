@@ -1,10 +1,10 @@
-<div class="cta-buttons">
+<nav class="cta-buttons">
   {% for item in items %}
   <a href="{{ item.link }}" class="cta-link">
     {% if item.icon %}
       {% set icon_parts = item.icon|split(":") %}
       {% if icon_parts|length == 2 %}
-      <span class="cta-link">
+      <span class="cta-link-icon" aria-hidden="true">
         {{ icon(icon_parts.0, icon_parts.1, {size: 'XS'}) }}
       </span>
       {% endif %}
@@ -12,4 +12,4 @@
     {{ item.title }}
   </a>
   {% endfor %}
-</div>
+</nav>
