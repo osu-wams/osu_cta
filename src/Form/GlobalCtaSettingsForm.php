@@ -20,10 +20,18 @@ use function PHPUnit\Framework\isInstanceOf;
 class GlobalCtaSettingsForm extends ConfigFormBase {
 
   /**
-   * {@inheritDoc}
+   * Add a new row for the Global CTA.
+   *
+   * @param array $form
+   *   The form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
    */
-  public function getFormId(): string {
-    return 'osu_cta_settings_form';
+  public function addCta(array &$form, FormStateInterface $form_state): void {
+    $cta = $form_state->get('cta') ?? [];
+    $cta[] = ['title' => '', 'uri' => '', 'icon' => '', 'weight' => \count($cta)];
+    $form_state->set('cta', $cta);
+    $form_state->setRebuild(TRUE);
   }
 
   /**
@@ -31,11 +39,28 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
     $storage = $form_state->get('cta');
+
     if ($storage === NULL) {
       $storage = $this->config('osu_cta.settings')->get('global_cta') ?? [];
       $form_state->set('cta', $storage ?? []);
     }
     $global_cta = $storage;
+    $form['header'] = [
+      '#type' => 'markup',
+      '#markup' => $this->t(
+        '<p>
+        Call to action (CTA) links should be concise and action-oriented.
+        Each title is limited to 19 characters, and the combined length of all
+        CTA titles must not exceed 35 characters.
+        </p>
+        <p>
+        To help track the total character count, you can use the
+        <a href="https://charactercounttool.com" target="_blank" rel="noopener noreferrer">
+        Character Count Tool
+        </a>.
+        </p>'
+      ),
+    ];
 
     $form['cta'] = [
       '#type' => 'table',
@@ -63,9 +88,9 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
         '#type' => 'textfield',
         '#title' => $this->t('Link text'),
         '#default_value' => $cta['title'] ?? '',
-        '#maxlength' => 255,
+        '#maxlength' => 19,
         '#required' => TRUE,
-        '#size' => 30,
+        '#size' => 20,
       ];
 
       $form['cta'][$delta]['uri'] = [
@@ -105,7 +130,7 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
       ];
     }
 
-    if (count($global_cta) < 3) {
+    if (\count($global_cta) < 3) {
       $form['add'] = [
         '#type' => 'submit',
         '#value' => $this->t('Add CTA'),
@@ -118,59 +143,10 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
   }
 
   /**
-   * Add a new row for the Global CTA.
-   *
-   * @param array $form
-   *   The form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form state.
-   */
-  public function addCta(array &$form, FormStateInterface $form_state): void {
-    $cta = $form_state->get('cta') ?? [];
-    $cta[] = ['title' => '', 'uri' => '', 'icon' => '', 'weight' => count($cta)];
-    $form_state->set('cta', $cta);
-    $form_state->setRebuild(TRUE);
-  }
-
-  /**
    * {@inheritDoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $ctas = $form_state->getValue('cta') ?? [];
-    $clean_ctas = [];
-
-    if (is_array($ctas)) {
-      $ctas = array_slice(array_values($ctas), 0, 3);
-      foreach ($ctas as $cta) {
-        // UI Icon returns an Object.
-        // We need just the icon id.
-        $icon_string = '';
-        $icon_data = $cta['icon'] ?? '';
-        if (is_array($icon_data) && !empty($icon_data['icon'])) {
-          /** @var \Drupal\Core\Theme\Icon\IconDefinition $icon_object */
-          $icon_object = $icon_data['icon'];
-          // Ensure we have an object and we are of the IconDefinition type.
-          if (is_object($icon_object) && isInstanceOf('IconDefinition', $icon_object)) {
-            // Gets the id as packid:iconid.
-            $icon_string = $icon_object->getId();
-          }
-          // Edge case if it isn't an object.
-          elseif (is_string($icon_object)) {
-            $icon_string = $icon_object;
-          }
-        }
-        // Create a new array with simple text for all the vaules.
-        $clean_ctas[] = [
-          'title' => $cta['title'] ?? '',
-          'uri' => $cta['uri'] ?? '',
-          'icon' => $icon_string,
-          'weight' => $cta['weight'] ?? 0,
-        ];
-      }
-    }
-    $this->config('osu_cta.settings')->set('global_cta', $clean_ctas)->save();
-
-    parent::submitForm($form, $form_state);
+  public function getFormId(): string {
+    return 'osu_cta_settings_form';
   }
 
   /**
@@ -189,6 +165,79 @@ class GlobalCtaSettingsForm extends ConfigFormBase {
     $ctas = array_values($ctas);
     $form_state->set('cta', $ctas);
     $form_state->setRebuild(TRUE);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
+    $ctas = $form_state->getValue('cta') ?? [];
+    $clean_ctas = [];
+
+    if (\is_array($ctas)) {
+      $ctas = \array_slice(array_values($ctas), 0, 3);
+
+      foreach ($ctas as $cta) {
+        // UI Icon returns an Object.
+        // We need just the icon id.
+        $icon_string = '';
+        $icon_data = $cta['icon'] ?? '';
+
+        if (\is_array($icon_data) && !empty($icon_data['icon'])) {
+          /** @var \Drupal\Core\Theme\Icon\IconDefinition $icon_object */
+          $icon_object = $icon_data['icon'];
+
+          // Ensure we have an object and we are of the IconDefinition type.
+          if (\is_object($icon_object) && isInstanceOf('IconDefinition', $icon_object)) {
+            // Gets the id as packid:iconid.
+            $icon_string = $icon_object->getId();
+          }
+          // Edge case if it isn't an object.
+          elseif (\is_string($icon_object)) {
+            $icon_string = $icon_object;
+          }
+        }
+        // Create a new array with simple text for all the vaules.
+        $clean_ctas[] = [
+          'title' => $cta['title'] ?? '',
+          'uri' => $cta['uri'] ?? '',
+          'icon' => $icon_string,
+          'weight' => $cta['weight'] ?? 0,
+        ];
+      }
+    }
+    $this->config('osu_cta.settings')->set('global_cta', $clean_ctas)->save();
+
+    parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $ctas = $form_state->getValue('cta');
+
+    $total_length = 0;
+
+    foreach ($ctas as $cta) {
+      $total_length += \strlen((string) $cta['title']);
+    }
+
+    if ($total_length > 35) {
+      foreach (array_keys($ctas) as $delta) {
+        $form_state->setErrorByName("cta][{$delta}][title", $this->t(
+          'The total length of all the titles needs to be less than 35 characters.<br />
+          Your current total length is @length.<br/>
+          <a href="@tool_url" target="_blank">Tool to count characters</a>',
+          [
+            '@length' => $total_length,
+            '@tool_url' => 'https://charactercounttool.com',
+          ]
+        ));
+      }
+    }
+
+    return parent::validateForm($form, $form_state);
   }
 
   /**
